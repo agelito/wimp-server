@@ -13,12 +13,10 @@ namespace WIMP_Server.Controllers
     [Route("[controller]")]
     public class UniverseController : ControllerBase
     {
-        private readonly ILogger<UniverseController> _logger;
         private readonly IWimpRepository _repository;
 
-        public UniverseController(ILogger<UniverseController> logger, IWimpRepository repository)
+        public UniverseController(IWimpRepository repository)
         {
-            _logger = logger;
             _repository = repository;
         }
 
