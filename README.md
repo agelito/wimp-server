@@ -154,7 +154,7 @@ This section describes how to set up and run WIMP-Server in a production-like en
 - _Replace `yourStrong(!)Password` with your own secure password and do not share the password with anyone_
 - _Take a note of the selected password stored in `SA_PASSWORD` because it will be used when configuring the server later on_
 ```sh
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=yourStrong(!)Password" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_PID=Express" -e "SA_PASSWORD=yourStrong(!)Password" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
 ```
 
 **Retrieve information about the running database container**
