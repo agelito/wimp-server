@@ -80,6 +80,7 @@ Use the following commands to create database migrations for a fresh database:
 ```sh
 cd WIMP-Server
 dotnet ef migrations add InitialCreate --context WimpDbContextDev --output-dir Migrations/Development
+cd ..
 ```
 
 Use the following commands to create database migrations for an existing database:
@@ -90,6 +91,7 @@ Use the following commands to create database migrations for an existing databas
 ```sh
 cd WIMP-Server
 dotnet ef migrations add <name> --context WimpDbContextDev --output-dir Migrations/Development
+cd ..
 ```
 
 Build and run the application, because there's two projects we'll have to specify the `.csproj` file as well:
@@ -224,7 +226,7 @@ docker build -t wimpserver .
 
 Run the built docker image using this command:
 ```sh
-docker run -d -p 8080:80 --name wimpserver wimpserver
+docker run -d -p 8080:80 wimpserver
 ```
 
 Verify the server was started correctly by trying to call one of the functions:
