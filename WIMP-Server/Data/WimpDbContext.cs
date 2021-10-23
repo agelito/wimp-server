@@ -21,8 +21,12 @@ namespace WIMP_Server.Data
 
         public DbSet<Stargate> Stargates { get; set; }
 
+        public DbSet<InvitationKey> InvitationKeys { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder
                 .Entity<Character>()
                 .HasMany(c => c.Intel)
@@ -83,7 +87,11 @@ namespace WIMP_Server.Data
                 .WithMany(s => s.IncomingStargates)
                 .HasForeignKey(s => s.DstStarSystemId);
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder
+                .Entity<User>()
+                .HasMany(u => u.InvitationKeys)
+                .WithOne(ik => ik.GeneratedByUser)
+                .HasForeignKey(u => u.GeneratedByUserId);
         }
     }
 }

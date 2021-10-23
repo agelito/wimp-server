@@ -12,5 +12,8 @@ namespace WIMP_Server.Dtos.Users
         [Required]
         [JsonPropertyName("password")]
         public string Password { get; set; }
+
+        [JsonPropertyName("invite_key")]
+        public string InviteKey { get; set; }
     }
 }

@@ -52,6 +52,8 @@ namespace WIMP_Server.Profiles
             CreateMap<User, ReadUserDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
+
+            CreateMap<InvitationKey, ReadInvitationKeyDto>();
         }
     }
 }

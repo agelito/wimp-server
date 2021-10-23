@@ -11,8 +11,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WIMP_Server.Data;
+using WIMP_Server.Data.Users;
 using WIMP_Server.DataServices.Http;
 using WIMP_Server.Models.Users;
+using WIMP_Server.Options;
 
 namespace WIMP_Server
 {
@@ -30,6 +32,9 @@ namespace WIMP_Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<DefaultUserOptions>(Configuration.GetSection(DefaultUserOptions.Key));
+            services.Configure<JwtOptions>(Configuration.GetSection(JwtOptions.Key));
+
             if (_environment.IsDevelopment())
             {
                 services.AddCors(options =>
@@ -58,6 +63,7 @@ namespace WIMP_Server
             }
 
             services.AddScoped<IWimpRepository, WimpRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddHttpClient<IEsiDataClient, EsiDataClient>();
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -96,16 +102,21 @@ namespace WIMP_Server
             {
                 opt.SaveToken = true;
                 opt.RequireHttpsMetadata = false;
+
+                var jwt = Configuration
+                    .GetSection(JwtOptions.Key)
+                    .Get<JwtOptions>();
+
                 opt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    ValidAudience = jwt.ValidAudience,
+                    ValidIssuer = jwt.ValidIssuer,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"])
+                        Encoding.UTF8.GetBytes(jwt.Secret)
                     ),
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     ValidateLifetime = true,
                 };
             });
@@ -133,6 +144,7 @@ namespace WIMP_Server
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             PrepareDatabase.Prepare(app);
+            PrepareUsers.Prepare(app);
         }
     }
 }
