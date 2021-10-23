@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wimpserver-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wimpserver
+  template:
+    metadata:
+      labels:
+        app: wimpserver
+    spec:
+      containers:
+        - name: wimpserver
+          image: ghcr.io/agelito/wimp-server:latest
+          env:
+            - name: ConnectionStrings:WimpDatabase
+              value: ""
+            - name: JWT:Secret
+              value: ""
+            - name: DefaultUser:Username
+              value: ""
+            - name: DefaultUser:Password
+              value: ""
