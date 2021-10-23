@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WIMP_Server.Models;
+using WIMP_Server.Models.Users;
 
 namespace WIMP_Server.Data
 {
-    public class WimpDbContext : DbContext
+    public class WimpDbContext : IdentityDbContext<User>
     {
         public WimpDbContext(DbContextOptions options) : base(options)
         {
@@ -80,6 +82,8 @@ namespace WIMP_Server.Data
                 .HasOne(s => s.DstStarSystem)
                 .WithMany(s => s.IncomingStargates)
                 .HasForeignKey(s => s.DstStarSystemId);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
