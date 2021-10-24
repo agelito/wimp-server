@@ -14,7 +14,7 @@ using System.Collections.Generic;
 namespace WIMP_Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Manager")]
     public class AdminController : ControllerBase
     {
