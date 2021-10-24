@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /user/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wimpserver-clusterip-service
+                port:
+                  number: 80
+          - path: /admin/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wimpserver-clusterip-service
+                port:
+                  number: 80
+          - path: /intel/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wimpserver-clusterip-service
+                port:
+                  number: 80
+          - path: /picture/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wimpserver-clusterip-service
+                port:
+                  number: 80
+          - path: /universe/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wimpserver-clusterip-service
+                port:
+                  number: 80
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wimpfe-clusterip-service
+                port:
+                  number: 80

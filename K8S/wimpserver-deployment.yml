@@ -16,11 +16,37 @@ spec:
         - name: wimpserver
           image: ghcr.io/agelito/wimp-server:latest
           env:
-            - name: ConnectionStrings:WimpDatabase
-              value: ""
-            - name: JWT:Secret
-              value: ""
-            - name: DefaultUser:Username
-              value: ""
-            - name: DefaultUser:Password
-              value: ""
+            - name: "ConnectionStrings__WimpDatabase"
+              valueFrom:
+                secretKeyRef:
+                  name: wimp
+                  key: db_connection_string
+            - name: "JWT__Secret"
+              valueFrom:
+                secretKeyRef:
+                  name: wimp
+                  key: jwt_secret
+            - name: "DefaultUser__Username"
+              valueFrom:
+                secretKeyRef:
+                  name: wimp
+                  key: default_username
+            - name: "DefaultUser__Password"
+              valueFrom:
+                secretKeyRef:
+                  name: wimp
+                  key: default_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wimpserver-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: wimpserver
+  ports:
+    - name: wimpserver
+      protocol: TCP
+      port: 80
+      targetPort: 80
