@@ -10,35 +10,7 @@ spec:
     - host: wimp.local
       http:
         paths:
-          - path: /user
-            pathType: Prefix
-            backend:
-              service:
-                name: wimpserver-clusterip-service
-                port:
-                  number: 80
-          - path: /admin
-            pathType: Prefix
-            backend:
-              service:
-                name: wimpserver-clusterip-service
-                port:
-                  number: 80
-          - path: /intel
-            pathType: Prefix
-            backend:
-              service:
-                name: wimpserver-clusterip-service
-                port:
-                  number: 80
-          - path: /picture
-            pathType: Prefix
-            backend:
-              service:
-                name: wimpserver-clusterip-service
-                port:
-                  number: 80
-          - path: /universe
+          - path: /api/
             pathType: Prefix
             backend:
               service:
@@ -46,13 +18,6 @@ spec:
                 port:
                   number: 80
           - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: wimpfe-clusterip-service
-                port:
-                  number: 80
-          - path: /register
             pathType: Prefix
             backend:
               service:
