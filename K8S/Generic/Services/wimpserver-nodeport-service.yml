@@ -11,3 +11,7 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 80
+    - name: wimpserver-ssl
+      protocol: TCP
+      port: 443
+      targetPort: 443
