@@ -10,6 +10,9 @@ using WIMP_Server.Models.Users;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace WIMP_Server.Controllers
 {
@@ -19,11 +22,13 @@ namespace WIMP_Server.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public AdminController(IUserRepository userRepository, IMapper mapper)
+        public AdminController(IUserRepository userRepository, UserManager<User> userManager, IMapper mapper)
         {
             _userRepository = userRepository;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -82,6 +87,44 @@ namespace WIMP_Server.Controllers
             }
 
             return Ok(_mapper.Map<IEnumerable<ReadInvitationKeyDto>>(invitationKeys));
+        }
+
+        [HttpGet("users", Name = "GetUserList")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ReadUsersDto>> GetUserList([FromQuery] int page)
+        {
+            // TODO: Avoid querying all users from the database, just
+            // get the ones needed for requested page.
+            var users = _userRepository.GetAllUsers();
+
+            const int perPage = 1;
+            var total = users.Count();
+            var totalPages = (int)Math.Ceiling((double)total / perPage);
+
+            var paginatedUsers = users
+                .Skip(page * perPage)
+                .Take(perPage);
+
+            var readUsers = new List<ReadUserDto>();
+            foreach (var user in paginatedUsers)
+            {
+                var readUser = _mapper.Map<ReadUserDto>(user);
+                readUser.Roles = await _userManager.GetRolesAsync(user)
+                    .ConfigureAwait(true);
+
+                readUsers.Add(readUser);
+            }
+
+            var result = new ReadUsersDto
+            {
+                Page = page,
+                PerPage = perPage,
+                TotalPages = totalPages,
+                Total = total,
+                Users = readUsers
+            };
+
+            return Ok(result);
         }
     }
 }
