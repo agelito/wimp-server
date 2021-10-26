@@ -79,6 +79,13 @@ namespace WIMP_Server.Controllers
                 return UnprocessableEntity(string.Join('\n', createUserResult.Errors.Select(e => e.Description)));
             }
 
+            var addRoleResult = await _userManager.AddToRoleAsync(user, "Member")
+                    .ConfigureAwait(true);
+            if (!addRoleResult.Succeeded)
+            {
+                return UnprocessableEntity(string.Join('\n', addRoleResult.Errors.Select(e => e.Description)));
+            }
+
             _logger.LogInformation($"Registered user with id {user.Id} and username {user.UserName}");
 
             var roles = await _userManager.GetRolesAsync(user)
