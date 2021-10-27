@@ -79,7 +79,7 @@ namespace WIMP_Server.Controllers
                 return UnprocessableEntity(string.Join('\n', createUserResult.Errors.Select(e => e.Description)));
             }
 
-            var addRoleResult = await _userManager.AddToRoleAsync(user, "Member")
+            var addRoleResult = await _userManager.AddToRoleAsync(user, "User")
                     .ConfigureAwait(true);
             if (!addRoleResult.Succeeded)
             {
