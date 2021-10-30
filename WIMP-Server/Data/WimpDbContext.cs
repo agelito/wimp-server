@@ -100,7 +100,7 @@ namespace WIMP_Server.Data
                 .Entity<ApiKey>()
                 .OwnsMany(apiKey => apiKey.Roles)
                 .WithOwner(role => role.Owner)
-                .HasForeignKey(role => role.ApiKeyId);
+                .HasForeignKey(role => role.ApiKey);
         }
     }
 }

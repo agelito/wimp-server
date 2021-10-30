@@ -9,13 +9,11 @@ namespace WIMP_Server.Models.Auth
     {
         [Key]
         [Required]
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string Key { get; set; }
 
         [Required]
         public string Owner { get; set; }
-
-        [Required]
-        public string Key { get; set; }
 
         [Required]
         public DateTime Created { get; set; }

@@ -7,7 +7,7 @@ namespace WIMP_Server.Auth.Roles
         public const string Admin = nameof(Admin);
         public const string User = nameof(User);
 
-        public const string IntelWrite = nameof(IntelWrite);
+        public const string IntelReport = nameof(IntelReport);
         public const string IntelRead = nameof(IntelRead);
 
         public const string UserRegister = nameof(UserRegister);
@@ -20,7 +20,7 @@ namespace WIMP_Server.Auth.Roles
             UserCreate,
             UserRegister,
             IntelRead,
-            IntelWrite,
+            IntelReport,
             Admin,
             User
         };

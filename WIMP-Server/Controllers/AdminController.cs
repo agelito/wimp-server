@@ -1,7 +1,6 @@
 using System;
 using System.Security.Claims;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WIMP_Server.Data.Users;
@@ -138,6 +137,12 @@ namespace WIMP_Server.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteUserWithId([FromQuery] string userId)
         {
+            var myUserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (myUserId.Value == userId)
+            {
+                return Forbid("Can't delete own user");
+            }
+
             var user = await _userManager.FindByIdAsync(userId)
                 .ConfigureAwait(true);
 

@@ -4,8 +4,12 @@ namespace WIMP_Server.Models.Auth
 {
     public class ApiKeyRole
     {
+        [Key]
         [Required]
-        public int ApiKeyId { get; set; }
+        public int Id { get; set; }
+
+        [Required]
+        public string ApiKey { get; set; }
 
         [Required]
         public string Role { get; set; }

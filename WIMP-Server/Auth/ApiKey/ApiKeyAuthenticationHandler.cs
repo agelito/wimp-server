@@ -30,25 +30,23 @@ namespace WIMP_Server.Auth.ApiKey
             _apiKeyRepository = apiKeyRepository;
         }
 
-        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             if (!Request.Headers.TryGetValue(ApiKeyHeaderName, out var apiKeyHeaderValues))
             {
-                return AuthenticateResult.NoResult();
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
 
             var providedApiKey = apiKeyHeaderValues.FirstOrDefault();
             if (apiKeyHeaderValues.Count == 0 || string.IsNullOrWhiteSpace(providedApiKey))
             {
-                return AuthenticateResult.NoResult();
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
 
-            var existingApiKey = await _apiKeyRepository
-                .Get(providedApiKey)
-                .ConfigureAwait(true);
+            var existingApiKey = _apiKeyRepository.Get(providedApiKey);
             if (existingApiKey == null)
             {
-                return AuthenticateResult.NoResult();
+                return Task.FromResult(AuthenticateResult.NoResult());
             }
 
             var claims = new List<Claim>
@@ -63,7 +61,7 @@ namespace WIMP_Server.Auth.ApiKey
             var principal = new ClaimsPrincipal(identities);
             var ticket = new AuthenticationTicket(principal, Options.Scheme);
 
-            return AuthenticateResult.Success(ticket);
+            return Task.FromResult(AuthenticateResult.Success(ticket));
         }
 
         protected override async Task HandleChallengeAsync(AuthenticationProperties properties)

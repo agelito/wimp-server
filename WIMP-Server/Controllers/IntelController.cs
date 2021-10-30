@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WIMP_Server.Auth.ApiKey;
 using WIMP_Server.Auth.Policies;
+using WIMP_Server.Auth.Roles;
 using WIMP_Server.Data;
 using WIMP_Server.DataServices.Http;
 using WIMP_Server.Dtos;
@@ -21,9 +23,12 @@ namespace WIMP_Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = Policy.OnlyUsers)]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     public class IntelController : ControllerBase
     {
+        private const string AuthSchemes =
+            ApiKeyAuthenticationOptions.DefaultScheme + "," +
+            JwtBearerDefaults.AuthenticationScheme;
         private readonly ILogger<IntelController> _logger;
         private readonly IWimpRepository _repository;
         private readonly IEsiDataClient _esi;
@@ -42,6 +47,7 @@ namespace WIMP_Server.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = Role.IntelReport)]
         public async Task<ActionResult> ReportIntel(CreateIntelDto intel)
         {
             _logger.LogTrace($"ReportIntel {JsonSerializer.Serialize(intel)}");
@@ -71,6 +77,7 @@ namespace WIMP_Server.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ReadIntelDto>), StatusCodes.Status200OK)]
+        [Authorize(Policy = Policy.OnlyUsers)]
         public ActionResult<IEnumerable<ReadIntelDto>> GetIntel()
         {
             var result = _repository.GetIntel()
@@ -83,6 +90,7 @@ namespace WIMP_Server.Controllers
         [Route("{intelId}")]
         [ProducesResponseType(typeof(ReadIntelDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Policy = Policy.OnlyUsers)]
         public ActionResult<ReadIntelDto> GetIntelById(int intelId)
         {
             var intel = _repository.GetIntelById(intelId);
