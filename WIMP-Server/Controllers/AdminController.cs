@@ -14,12 +14,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using WIMP_Server.Dtos.Admin;
+using WIMP_Server.Auth.Policies;
 
 namespace WIMP_Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Manager")]
+    [Authorize(Policy = Policy.OnlyAdmins)]
     public class AdminController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -98,9 +99,7 @@ namespace WIMP_Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ReadUsersDto>> GetUserList([FromQuery] int page)
         {
-            // TODO: Avoid querying all users from the database, just
-            // get the ones needed for requested page.
-            var users = _userRepository.GetAllUsers();
+            var users = _userRepository.GetUsers();
 
             const int perPage = 10;
             var total = users.Count();
@@ -136,7 +135,6 @@ namespace WIMP_Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult> DeleteUserWithId([FromQuery] string userId)
         {
             var user = await _userManager.FindByIdAsync(userId)
@@ -163,7 +161,6 @@ namespace WIMP_Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult> ChangeRole([FromBody] ChangeUserRoleDto changeUserRoleDto)
         {
             var user = await _userManager.FindByIdAsync(changeUserRoleDto.UserId)
