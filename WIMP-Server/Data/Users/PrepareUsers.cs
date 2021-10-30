@@ -66,7 +66,7 @@ namespace WIMP_Server.Data.Users
                     throw new Exception("Couldn't create default user");
                 }
 
-                var addRolesResult = await userManager.AddToRoleAsync(user, Role.User)
+                var addRolesResult = await userManager.AddToRoleAsync(user, Role.Admin)
                     .ConfigureAwait(true);
                 if (!addRolesResult.Succeeded)
                 {

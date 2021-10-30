@@ -6,7 +6,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using WIMP_Server.Auth.Policies;
+using WIMP_Server.Auth.Roles;
 using WIMP_Server.Data.Users;
 using WIMP_Server.Dtos.Users;
 using WIMP_Server.Models.Users;
@@ -23,7 +24,7 @@ namespace WIMP_Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = Policy.OnlyUsers)]
     public class UserController : ControllerBase
     {
         public UserController(IUserRepository userRepository, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<JwtOptions> jwt, IMapper mapper, ILogger<UserController> logger)
@@ -79,7 +80,7 @@ namespace WIMP_Server.Controllers
                 return UnprocessableEntity(string.Join('\n', createUserResult.Errors.Select(e => e.Description)));
             }
 
-            var addRoleResult = await _userManager.AddToRoleAsync(user, "User")
+            var addRoleResult = await _userManager.AddToRoleAsync(user, Role.User)
                     .ConfigureAwait(true);
             if (!addRoleResult.Succeeded)
             {

@@ -127,12 +127,6 @@ namespace WIMP_Server
                     RequireExpirationTime = true,
                     ValidateLifetime = true,
                 };
-            });
-
-            services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = ApiKeyAuthenticationOptions.DefaultScheme;
-                opt.DefaultChallengeScheme = ApiKeyAuthenticationOptions.DefaultScheme;
             }).AddApiKeySupport(_ => { });
 
             services.AddAuthorization(options =>
@@ -144,9 +138,9 @@ namespace WIMP_Server
             services.AddSingleton<IAuthorizationHandler, OnlyAdminsAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, OnlyUsersAuthorizationHandler>();
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<WimpDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<WimpDbContext>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

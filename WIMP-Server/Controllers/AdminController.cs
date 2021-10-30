@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using WIMP_Server.Dtos.Admin;
 using WIMP_Server.Auth.Policies;
+using WIMP_Server.Auth.Roles;
 
 namespace WIMP_Server.Controllers
 {
@@ -83,7 +84,7 @@ namespace WIMP_Server.Controllers
         public ActionResult<IEnumerable<ReadInvitationKeyDto>> GetInvitationKeys()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var isAdmin = User.IsInRole("Admin");
+            var isAdmin = User.IsInRole(Role.Admin);
 
             var invitationKeys = _userRepository.GetAllInvitationKeys();
 

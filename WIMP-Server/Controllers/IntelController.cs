@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WIMP_Server.Auth.Policies;
 using WIMP_Server.Data;
 using WIMP_Server.DataServices.Http;
 using WIMP_Server.Dtos;
@@ -21,7 +21,7 @@ namespace WIMP_Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Policy = Policy.OnlyUsers)]
     public class IntelController : ControllerBase
     {
         private readonly ILogger<IntelController> _logger;
@@ -42,7 +42,6 @@ namespace WIMP_Server.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [AllowAnonymous]
         public async Task<ActionResult> ReportIntel(CreateIntelDto intel)
         {
             _logger.LogTrace($"ReportIntel {JsonSerializer.Serialize(intel)}");
